@@ -1,56 +1,88 @@
+using System.Collections.Generic;
+using System.Linq;
 using HACC.VirtualConsoleBuffer;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
 
-namespace HACC.Tests
+namespace HACC.Tests;
+
+[TestClass]
+public class CharacterBufferTests
 {
-    [TestClass]
-    public class CharacterBufferTests
+    [TestMethod]
+    public void HelloWorld()
     {
-        [TestMethod]
-        public void HelloWorld()
-        {
-            var expectedLineOne = "Hello World";
-            var expectedLineTwo = "Spectre is amazing, thanks Patrik";
+        var expectedLineOne = "Hello World";
+        var expectedLineTwo = "Spectre is amazing, thanks Patrik";
 
-            var loggerMock = new Mock<ILogger>();
-            
-            CharacterBuffer characterBuffer = new CharacterBuffer(
-                logger: loggerMock.Object,
-                columns: Defaults.InitialColumns,
-                rows: Defaults.InitialRows);
+        var loggerMock = new Mock<ILogger>();
 
-            characterBuffer.WriteLine(line: expectedLineOne, new CharacterEffects(bold: true));
-            characterBuffer.WriteLine(line: expectedLineTwo, new CharacterEffects());
+        var characterBuffer = new CharacterBuffer(
+            loggerMock.Object,
+            Defaults.InitialColumns,
+            Defaults.InitialRows);
 
-            var effectsPastEndLineOne = characterBuffer.CharacterEffectsAt(x: expectedLineOne.Length, y: 0);
-            var effectsPastEndLineTwo = characterBuffer.CharacterEffectsAt(x: expectedLineTwo.Length, y: 1);
-            var dirtySections = characterBuffer.DirtyRangeValues(includeEffectsChanges: true);
+        characterBuffer.WriteLine(expectedLineOne, new CharacterEffects(bold: true));
 
-            Assert.AreEqual(
-                expected: expectedLineOne,
-                actual: characterBuffer.GetLine(x: 0, y: 0));
+        Assert.AreEqual(
+            1,
+            characterBuffer.Cursor.Position.Y);
+        characterBuffer.WriteLine(expectedLineTwo, new CharacterEffects());
 
-            Assert.AreEqual(
-                expected: expectedLineTwo,
-                actual: characterBuffer.GetLine(x: 0, y: 1));
+        var effectsPastEndLineOne = characterBuffer.CharacterEffectsAt(expectedLineOne.Length, 0);
+        var effectsPastEndLineTwo = characterBuffer.CharacterEffectsAt(expectedLineTwo.Length, 1);
+        var dirtySections = characterBuffer.DirtyRangeValues();
 
-            Assert.AreEqual(
-                expected: new List<(int xStart, int xEnd, int y, string value, CharacterEffects effects)>() {
-                    {( xStart: 0, xEnd: expectedLineOne.Length, y: 0, value: expectedLineOne, effects: new CharacterEffects(bold: true) )},
-                    {( xStart: 0, xEnd: expectedLineTwo.Length, y: 1, value: expectedLineOne, effects: new CharacterEffects(bold: false) )},
-                },
-                actual: dirtySections);
+        Assert.AreEqual(
+            expectedLineOne,
+            characterBuffer.GetLine(0, 0));
 
-            Assert.AreEqual(
-                expected: new CharacterEffects(),
-                actual: effectsPastEndLineOne);
+        var firstElement = dirtySections.ElementAt(0);
+        Assert.AreEqual(
+            expected: 0,
+            actual: firstElement.xStart);
+        Assert.AreEqual(
+            expected: expectedLineOne.Length - 1,
+            actual: firstElement.xEnd);
+        Assert.AreEqual(
+            expected: 0,
+            actual: firstElement.y);
+        Assert.AreEqual(
+            expected: expectedLineOne,
+            actual: firstElement.value);
+        Assert.AreEqual(
+            expected: new CharacterEffects(bold: true),
+            actual: firstElement.effects);
 
-            Assert.AreEqual(
-                expected: new CharacterEffects(),
-                actual: effectsPastEndLineTwo);
-        }
+        Assert.AreEqual(
+            new CharacterEffects(),
+            effectsPastEndLineOne);
+
+        Assert.AreEqual(
+            expectedLineTwo,
+            characterBuffer.GetLine(0, 1));
+
+        var secondElement = dirtySections.ElementAt(1);
+        Assert.AreEqual(
+            expected: 0,
+            actual: secondElement.xStart);
+        Assert.AreEqual(
+            expected: expectedLineTwo.Length - 1,
+            actual: secondElement.xEnd);
+        Assert.AreEqual(
+            expected: 1,
+            actual: secondElement.y);
+        Assert.AreEqual(
+            expected: expectedLineTwo,
+            actual: secondElement.value);
+        Assert.AreEqual(
+            expected: new CharacterEffects(bold: false),
+            actual: secondElement.effects);
+
+
+        Assert.AreEqual(
+            new CharacterEffects(),
+            effectsPastEndLineTwo);
     }
 }
