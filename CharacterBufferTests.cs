@@ -52,19 +52,19 @@ public class CharacterBufferTests
         var firstElement = dirtySections.ElementAt(0); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
-            actual: firstElement.xStart);
+            actual: firstElement.XStart);
         Assert.AreEqual(
             expected: expectedLineOne.Length - 1,
-            actual: firstElement.xEnd);
+            actual: firstElement.XEnd);
         Assert.AreEqual(
             expected: 0,
-            actual: firstElement.y);
+            actual: firstElement.Y);
         Assert.AreEqual(
             expected: expectedLineOne,
-            actual: firstElement.value);
+            actual: firstElement.Value);
         Assert.AreEqual(
             expected: new CharacterEffects(bold: true),
-            actual: firstElement.effects);
+            actual: firstElement.CharacterEffects);
 
         Assert.AreEqual(
             new CharacterEffects(),
@@ -77,19 +77,19 @@ public class CharacterBufferTests
         var secondElement = dirtySections.ElementAt(1); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
-            actual: secondElement.xStart);
+            actual: secondElement.XStart);
         Assert.AreEqual(
             expected: expectedLineTwo.Length - 1,
-            actual: secondElement.xEnd);
+            actual: secondElement.XEnd);
         Assert.AreEqual(
             expected: 1,
-            actual: secondElement.y);
+            actual: secondElement.Y);
         Assert.AreEqual(
             expected: expectedLineTwo,
-            actual: secondElement.value);
+            actual: secondElement.Value);
         Assert.AreEqual(
             expected: new CharacterEffects(bold: false),
-            actual: secondElement.effects);
+            actual: secondElement.CharacterEffects);
 
 
         Assert.AreEqual(
@@ -170,35 +170,35 @@ public class CharacterBufferTests
         var firstElement = dirtySections.ElementAt(0); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
-            actual: firstElement.xStart);
+            actual: firstElement.XStart);
         Assert.AreEqual(
             expected: expectedLineOne.Length - 1,
-            actual: firstElement.xEnd);
+            actual: firstElement.XEnd);
         Assert.AreEqual(
             expected: 0,
-            actual: firstElement.y);
+            actual: firstElement.Y);
         Assert.AreEqual(
             expected: expectedLineOne,
-            actual: firstElement.value);
+            actual: firstElement.Value);
         Assert.AreEqual(
             expected: expectedEffectsOne,
-            actual: firstElement.effects);
+            actual: firstElement.CharacterEffects);
 
         var secondElement = dirtySections.ElementAt(1); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: expectedLineOne.Length,
-            actual: secondElement.xStart);
+            actual: secondElement.XStart);
         Assert.AreEqual(
             expected: combinedStrings.Length - 1,
-            actual: secondElement.xEnd);
+            actual: secondElement.XEnd);
         Assert.AreEqual(
             expected: 0,
-            actual: secondElement.y);
+            actual: secondElement.Y);
         Assert.AreEqual(
             expected: expectedLineOnePartTwo,
-            actual: secondElement.value);
+            actual: secondElement.Value);
         Assert.AreEqual(
             expected: expectedEffectsTwo,
-            actual: secondElement.effects);
+            actual: secondElement.CharacterEffects);
     }
 }
