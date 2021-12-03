@@ -171,7 +171,7 @@ public class CharacterBufferTests
             expected: combinedStrings.Length - 1,
             actual: secondElement.xEnd);
         Assert.AreEqual(
-            expected: 1,
+            expected: 0,
             actual: secondElement.y);
         Assert.AreEqual(
             expected: expectedLineOnePartTwo,
