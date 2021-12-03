@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HACC.VirtualConsoleBuffer;
@@ -101,7 +102,26 @@ public class CharacterBufferTests
     {
         // Arrange
         var expectedLineOne = "Hello World";
+
+        var expectedEffectsOne = new CharacterEffects(
+            bold: true,
+            italic: false,
+            underline: false,
+            inverse: false,
+            blink: false,
+            background: ConsoleColor.Black,
+            foreground: ConsoleColor.White);
+
         var expectedLineOnePartTwo = "Spectre is amazing, thanks Patrik";
+
+        var expectedEffectsTwo = new CharacterEffects(
+            bold: false,
+            italic: false,
+            underline: false,
+            inverse: false,
+            blink: false,
+            background: ConsoleColor.Black,
+            foreground: ConsoleColor.Yellow);
 
         var loggerMock = new Mock<ILogger>();
 
@@ -110,10 +130,11 @@ public class CharacterBufferTests
             Defaults.InitialColumns,
             Defaults.InitialRows);
 
+
         // Act
         characterBuffer.WriteLine(
             line: expectedLineOne,
-            characterEffects: new CharacterEffects(bold: true),
+            characterEffects: expectedEffectsOne,
             automaticWrap: false);
 
         // Assert cursor position moved automatically.
@@ -127,7 +148,7 @@ public class CharacterBufferTests
         // Act / finish acting, step 2
         characterBuffer.WriteLine(
             line: expectedLineOnePartTwo,
-            characterEffects: new CharacterEffects(bold: false),
+            characterEffects: expectedEffectsTwo,
             automaticWrap: true);
 
 
@@ -160,7 +181,7 @@ public class CharacterBufferTests
             expected: expectedLineOne,
             actual: firstElement.value);
         Assert.AreEqual(
-            expected: new CharacterEffects(bold: true),
+            expected: expectedEffectsOne,
             actual: firstElement.effects);
 
         var secondElement = dirtySections.ElementAt(1); // this call is a library call, not our code.
@@ -177,7 +198,7 @@ public class CharacterBufferTests
             expected: expectedLineOnePartTwo,
             actual: secondElement.value);
         Assert.AreEqual(
-            expected: new CharacterEffects(bold: false),
+            expected: expectedEffectsTwo,
             actual: secondElement.effects);
     }
 }
