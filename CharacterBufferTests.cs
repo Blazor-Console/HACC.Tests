@@ -135,7 +135,7 @@ public class CharacterBufferTests
         characterBuffer.WriteLine(
             line: expectedLineOne,
             characterEffects: expectedEffectsOne,
-            automaticWrap: false);
+            automaticNewLine: false);
 
         // Assert cursor position moved automatically.
         Assert.AreEqual(
@@ -149,7 +149,7 @@ public class CharacterBufferTests
         characterBuffer.WriteLine(
             line: expectedLineOnePartTwo,
             characterEffects: expectedEffectsTwo,
-            automaticWrap: true);
+            automaticNewLine: true);
 
 
         // Assert
