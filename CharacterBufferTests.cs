@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using HACC.VirtualConsoleBuffer;
+using HACC.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -21,35 +20,37 @@ public class CharacterBufferTests
         var loggerMock = new Mock<ILogger>();
 
         var characterBuffer = new CharacterBuffer(
-            loggerMock.Object,
-            Defaults.InitialColumns,
-            Defaults.InitialRows);
-        
+            logger: loggerMock.Object);
+
         // Act
-        characterBuffer.WriteLine(expectedLineOne, new CharacterEffects(bold: true));
+        characterBuffer.WriteLine(line: expectedLineOne, characterEffects: new CharacterEffects(bold: true));
 
         // Assert cursor position moved automatically.
         Assert.AreEqual(
-            0,
-            characterBuffer.Cursor.Position.X);
+            expected: 0,
+            actual: characterBuffer.Cursor.Position.X);
         Assert.AreEqual(
-            1,
-            characterBuffer.Cursor.Position.Y);
+            expected: 1,
+            actual: characterBuffer.Cursor.Position.Y);
 
         // Act / finish acting, step 2
-        characterBuffer.WriteLine(expectedLineTwo, new CharacterEffects());
+        characterBuffer.WriteLine(line: expectedLineTwo, characterEffects: new CharacterEffects());
 
 
         // Assert
-        var effectsPastEndLineOne = characterBuffer.CharacterEffectsAt(expectedLineOne.Length, 0);
-        var effectsPastEndLineTwo = characterBuffer.CharacterEffectsAt(expectedLineTwo.Length, 1);
+        var effectsPastEndLineOne = characterBuffer.CharacterEffectsAt(x: expectedLineOne.Length, y: 0);
+        var effectsPastEndLineTwo = characterBuffer.CharacterEffectsAt(x: expectedLineTwo.Length, y: 1);
         var dirtySections = characterBuffer.DirtyRangeValues();
 
         Assert.AreEqual(
-            expectedLineOne,
-            characterBuffer.GetLine(0, 0));
+            expected: 2,
+            actual: dirtySections.Count());
 
-        var firstElement = dirtySections.ElementAt(0); // this call is a library call, not our code.
+        Assert.AreEqual(
+            expected: expectedLineOne,
+            actual: characterBuffer.GetLine(x: 0, y: 0));
+
+        var firstElement = dirtySections.ElementAt(index: 0); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
             actual: firstElement.XStart);
@@ -62,19 +63,18 @@ public class CharacterBufferTests
         Assert.AreEqual(
             expected: expectedLineOne,
             actual: firstElement.Value);
-        Assert.AreEqual(
-            expected: new CharacterEffects(bold: true),
-            actual: firstElement.CharacterEffects);
+        Assert.IsTrue(condition: firstElement.CharacterEffects.Equals(
+            other: new CharacterEffects(bold: true)));
 
         Assert.AreEqual(
-            new CharacterEffects(),
-            effectsPastEndLineOne);
+            expected: new CharacterEffects(),
+            actual: effectsPastEndLineOne);
 
         Assert.AreEqual(
-            expectedLineTwo,
-            characterBuffer.GetLine(0, 1));
+            expected: expectedLineTwo,
+            actual: characterBuffer.GetLine(x: 0, y: 1));
 
-        var secondElement = dirtySections.ElementAt(1); // this call is a library call, not our code.
+        var secondElement = dirtySections.ElementAt(index: 1); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
             actual: secondElement.XStart);
@@ -93,8 +93,8 @@ public class CharacterBufferTests
 
 
         Assert.AreEqual(
-            new CharacterEffects(),
-            effectsPastEndLineTwo);
+            expected: new CharacterEffects(),
+            actual: effectsPastEndLineTwo);
     }
 
     [TestMethod]
@@ -126,9 +126,7 @@ public class CharacterBufferTests
         var loggerMock = new Mock<ILogger>();
 
         var characterBuffer = new CharacterBuffer(
-            loggerMock.Object,
-            Defaults.InitialColumns,
-            Defaults.InitialRows);
+            logger: loggerMock.Object);
 
 
         // Act
@@ -139,11 +137,11 @@ public class CharacterBufferTests
 
         // Assert cursor position moved automatically.
         Assert.AreEqual(
-            expectedLineOne.Length,
-            characterBuffer.Cursor.Position.X);
+            expected: expectedLineOne.Length,
+            actual: characterBuffer.Cursor.Position.X);
         Assert.AreEqual(
-            0,
-            characterBuffer.Cursor.Position.Y);
+            expected: 0,
+            actual: characterBuffer.Cursor.Position.Y);
 
         // Act / finish acting, step 2
         characterBuffer.WriteLine(
@@ -154,20 +152,24 @@ public class CharacterBufferTests
 
         // Assert
         Assert.AreEqual(
-            0,
-            characterBuffer.Cursor.Position.X);
+            expected: 0,
+            actual: characterBuffer.Cursor.Position.X);
         Assert.AreEqual(
-            1,
-            characterBuffer.Cursor.Position.Y);
+            expected: 1,
+            actual: characterBuffer.Cursor.Position.Y);
 
         var dirtySections = characterBuffer.DirtyRangeValues();
+
+        Assert.AreEqual(
+            expected: 2,
+            actual: dirtySections.Count());
 
         var combinedStrings = expectedLineOne + expectedLineOnePartTwo;
         Assert.AreEqual(
             expected: combinedStrings,
-            actual: characterBuffer.GetLine(0, 0));
+            actual: characterBuffer.GetLine(x: 0, y: 0));
 
-        var firstElement = dirtySections.ElementAt(0); // this call is a library call, not our code.
+        var firstElement = dirtySections.ElementAt(index: 0); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: 0,
             actual: firstElement.XStart);
@@ -184,7 +186,7 @@ public class CharacterBufferTests
             expected: expectedEffectsOne,
             actual: firstElement.CharacterEffects);
 
-        var secondElement = dirtySections.ElementAt(1); // this call is a library call, not our code.
+        var secondElement = dirtySections.ElementAt(index: 1); // this call is a library call, not our code.
         Assert.AreEqual(
             expected: expectedLineOne.Length,
             actual: secondElement.XStart);
