@@ -98,6 +98,22 @@ public class CharacterBufferTests
     }
 
     [TestMethod]
+    public void EmptyScreen()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger>();
+
+        var characterBuffer = new CharacterBuffer(
+            logger: loggerMock.Object);
+
+        var dirtySections = characterBuffer.DirtyRangeValues();
+
+        Assert.AreEqual(
+            expected: 0,
+            actual: dirtySections.Count());
+    }
+
+    [TestMethod]
     public void TwoColorNoWrapTest()
     {
         // Arrange
