@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace HACC.Models.Canvas.Test.ServerSide.Pages;
 
-public class WebGLComponent : ComponentBase
+public partial class WebGL : ComponentBase
 {
     private const string VS_SOURCE = "attribute vec3 aPos;" +
                                      "attribute vec3 aColor;" +
@@ -24,12 +24,12 @@ public class WebGLComponent : ComponentBase
                                      "gl_FragColor = vec4(vColor, 1.0);" +
                                      "}";
 
-    protected WebConsole _canvasReference;
+    protected WebConsole _webConsole;
     private WebGLContext _context;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this._context = await this._canvasReference.CreateWebGLAsync(attributes: new WebGLContextAttributes
+        this._context = await this._webConsole.CreateWebGLAsync(attributes: new WebGLContextAttributes
         {
             PowerPreference = WebGLContextAttributes.POWER_PREFERENCE_HIGH_PERFORMANCE,
         });

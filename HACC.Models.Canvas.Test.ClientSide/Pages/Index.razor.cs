@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Components;
 
 namespace HACC.Models.Canvas.Test.ClientSide.Pages;
 
-public class IndexComponent : ComponentBase
+public partial class Index : ComponentBase
 {
-    protected WebConsole _canvasReference;
+    protected WebConsole _webConsole;
     private Canvas2DContext _context;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this._context = await this._canvasReference.CreateCanvas2DAsync();
+        this._context = await this._webConsole.CreateCanvas2DAsync();
         await this._context.SetFillStyleAsync(value: "green");
 
         await this._context.FillRectAsync(x: 10,
