@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\HACC.Models.Canvas.JS\HACC.Models.Canvas.JS.csproj" />
         <ProjectReference Include="..\..\..\src\HACC\HACC.csproj" />
     </ItemGroup>
 

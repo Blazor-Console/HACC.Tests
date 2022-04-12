@@ -38,6 +38,7 @@ public partial class WebGL : ComponentBase
             green: 0,
             blue: 0,
             alpha: 1);
+        await this._context.ClearAsync(mask: BufferBits.COLOR_BUFFER_BIT);
 
         var program = await this.InitProgramAsync(gl: this._context,
             vsSource: VS_SOURCE,

@@ -75,9 +75,12 @@ public partial class WebGL : ComponentBase
 
         await this._context.UseProgramAsync(program: program);
 
+        await this._context.BeginBatchAsync();
+        await this._context.ClearAsync(mask: BufferBits.COLOR_BUFFER_BIT);
         await this._context.DrawArraysAsync(mode: Primitive.TRIANGLES,
             first: 0,
             count: 3);
+        await this._context.EndBatchAsync();
     }
 
     private async Task<WebGLProgram> InitProgramAsync(WebGLContext gl, string vsSource, string fsSource)
