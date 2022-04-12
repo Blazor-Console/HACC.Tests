@@ -24,12 +24,12 @@ public partial class WebGL : ComponentBase
                                      "gl_FragColor = vec4(vColor, 1.0);" +
                                      "}";
 
-    protected WebConsole _webConsole;
+    protected BECanvas _canvas;
     private WebGLContext _context;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this._context = await this._webConsole.CreateWebGLAsync(attributes: new WebGLContextAttributes
+        this._context = await this._canvas.CreateWebGLAsync(attributes: new WebGLContextAttributes
         {
             PowerPreference = WebGLContextAttributes.POWER_PREFERENCE_HIGH_PERFORMANCE,
         });

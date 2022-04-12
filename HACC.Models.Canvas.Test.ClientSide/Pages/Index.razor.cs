@@ -8,12 +8,12 @@ namespace HACC.Models.Canvas.Test.ClientSide.Pages;
 
 public partial class Index : ComponentBase
 {
-    protected WebConsole _webConsole;
+    protected BECanvas _canvas;
     private Canvas2DContext _context;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this._context = await this._webConsole.CreateCanvas2DAsync();
+        this._context = await this._canvas.CreateCanvas2DAsync();
         await this._context.SetFillStyleAsync(value: "green");
 
         await this._context.FillRectAsync(x: 10,
